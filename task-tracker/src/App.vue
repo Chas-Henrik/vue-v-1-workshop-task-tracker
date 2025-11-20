@@ -95,6 +95,16 @@ const filteredTasks = computed(() => {
   }
   return tasks.value
 })
+
+const totalTasks = computed(() => tasks.value.length)
+
+const activeTasks = computed(() => 
+  tasks.value.filter(task => task.status === 'active').length
+)
+
+const completedTasks = computed(() => 
+  tasks.value.filter(task => task.status === 'completed').length
+)
 </script>
 
 <template>
@@ -161,6 +171,22 @@ const filteredTasks = computed(() => {
         >
           Completed
         </button>
+      </div>
+    </div>
+    
+    <!-- Statistics Panel -->
+    <div class="stats-panel">
+      <div class="stat">
+        <span class="stat-label">Total Tasks</span>
+        <span class="stat-value">{{ totalTasks }}</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Active</span>
+        <span class="stat-value active">{{ activeTasks }}</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Completed</span>
+        <span class="stat-value completed">{{ completedTasks }}</span>
       </div>
     </div>
     
@@ -323,6 +349,46 @@ h1 {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border-color: #667eea;
+}
+
+.stats-panel {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.stat-label {
+  display: block;
+  color: #666;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.5px;
+}
+
+.stat-value {
+  display: block;
+  color: #2c3e50;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.stat-value.active {
+  color: #2e7d32;
+}
+
+.stat-value.completed {
+  color: #616161;
 }
 
 .task-list {
