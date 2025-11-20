@@ -1,6 +1,10 @@
 <script setup>
 import { ref } from 'vue'
 
+const newTaskTitle = ref('')
+const newTaskDescription = ref('')
+const newTaskCategory = ref('Work')
+
 const tasks = ref([
   {
     id: 1,
@@ -43,11 +47,73 @@ const tasks = ref([
     createdAt: new Date()
   }
 ])
+
+const addTask = () => {
+  if (!newTaskTitle.value.trim()) {
+    return
+  }
+  
+  const maxId = tasks.value.length > 0 
+    ? Math.max(...tasks.value.map(task => task.id)) 
+    : 0
+  
+  tasks.value.push({
+    id: maxId + 1,
+    title: newTaskTitle.value,
+    description: newTaskDescription.value,
+    category: newTaskCategory.value,
+    status: 'active',
+    createdAt: new Date()
+  })
+  
+  // Reset form
+  newTaskTitle.value = ''
+  newTaskDescription.value = ''
+  newTaskCategory.value = 'Work'
+}
 </script>
 
 <template>
   <div class="app">
     <h1>📝 Task Tracker</h1>
+    
+    <!-- Add Task Panel -->
+    <div class="add-task-panel">
+      <h2>➕ Add New Task</h2>
+      <form @submit.prevent="addTask">
+        <div class="form-group">
+          <label for="task-title">Title</label>
+          <input 
+            id="task-title"
+            v-model="newTaskTitle" 
+            type="text" 
+            placeholder="Enter task title..."
+            required
+          >
+        </div>
+        
+        <div class="form-group">
+          <label for="task-description">Description</label>
+          <textarea 
+            id="task-description"
+            v-model="newTaskDescription" 
+            placeholder="Enter task description..."
+            rows="3"
+          ></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label for="task-category">Category</label>
+          <select id="task-category" v-model="newTaskCategory">
+            <option value="Work">Work</option>
+            <option value="Personal">Personal</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        
+        <button type="submit" class="add-btn">Add Task</button>
+      </form>
+    </div>
     
     <div class="task-list">
       <div 
@@ -86,6 +152,84 @@ h1 {
   text-align: center;
   color: #2c3e50;
   margin-bottom: 2rem;
+}
+
+.add-task-panel {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.add-task-panel h2 {
+  margin: 0 0 1.5rem 0;
+  color: white;
+  font-size: 1.5rem;
+}
+
+.add-task-panel form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  padding: 0.75rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  font-size: 1rem;
+  background: white;
+  color: #2c3e50;
+  transition: border-color 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: white;
+}
+
+.form-group textarea {
+  resize: vertical;
+  font-family: inherit;
+}
+
+.add-btn {
+  padding: 0.875rem 2rem;
+  background: white;
+  color: #667eea;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  margin-top: 0.5rem;
+}
+
+.add-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.add-btn:active {
+  transform: translateY(0);
 }
 
 .task-list {
