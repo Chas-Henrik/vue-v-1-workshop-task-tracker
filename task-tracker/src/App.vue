@@ -71,6 +71,13 @@ const addTask = () => {
   newTaskDescription.value = ''
   newTaskCategory.value = 'Work'
 }
+
+const toggleTaskStatus = (taskId) => {
+  const task = tasks.value.find(t => t.id === taskId)
+  if (task) {
+    task.status = task.status === 'active' ? 'completed' : 'active'
+  }
+}
 </script>
 
 <template>
@@ -131,7 +138,7 @@ const addTask = () => {
         
         <p class="task-description">{{ task.description }}</p>
         
-        <div class="task-footer">
+        <div class="task-footer" @click="toggleTaskStatus(task.id)">
           <span class="status-badge" :class="task.status">
             {{ task.status === 'completed' ? '✓ Completed' : '○ Active' }}
           </span>
@@ -307,6 +314,7 @@ h1 {
 .task-footer {
   display: flex;
   justify-content: flex-start;
+  cursor: pointer;
 }
 
 .status-badge {
@@ -314,6 +322,11 @@ h1 {
   border-radius: 6px;
   font-size: 0.875rem;
   font-weight: 500;
+  transition: transform 0.2s ease;
+}
+
+.task-footer:hover .status-badge {
+  transform: scale(1.05);
 }
 
 .status-badge.active {
