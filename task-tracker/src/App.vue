@@ -78,6 +78,13 @@ const toggleTaskStatus = (taskId) => {
     task.status = task.status === 'active' ? 'completed' : 'active'
   }
 }
+
+const deleteTask = (taskId) => {
+  const index = tasks.value.findIndex(t => t.id === taskId)
+  if (index !== -1) {
+    tasks.value.splice(index, 1)
+  }
+}
 </script>
 
 <template>
@@ -131,16 +138,17 @@ const toggleTaskStatus = (taskId) => {
       >
         <div class="task-header">
           <h3>{{ task.title }}</h3>
-          <span class="category-badge" :class="task.category.toLowerCase()">
-            {{ task.category }}
-          </span>
+          <button class="delete-btn" @click="deleteTask(task.id)" title="Delete task">✕</button>
         </div>
         
         <p class="task-description">{{ task.description }}</p>
         
-        <div class="task-footer" @click="toggleTaskStatus(task.id)">
-          <span class="status-badge" :class="task.status">
+        <div class="task-footer">
+          <span class="status-badge" :class="task.status" @click="toggleTaskStatus(task.id)">
             {{ task.status === 'completed' ? '✓ Completed' : '○ Active' }}
+          </span>
+          <span class="category-badge" :class="task.category.toLowerCase()">
+            {{ task.category }}
           </span>
         </div>
       </div>
@@ -313,8 +321,9 @@ h1 {
 
 .task-footer {
   display: flex;
-  justify-content: flex-start;
-  cursor: pointer;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
 }
 
 .status-badge {
@@ -323,10 +332,38 @@ h1 {
   font-size: 0.875rem;
   font-weight: 500;
   transition: transform 0.2s ease;
+  cursor: pointer;
 }
 
-.task-footer:hover .status-badge {
+.status-badge:hover {
   transform: scale(1.05);
+}
+
+.delete-btn {
+  background: #ff6b6b;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  width: 24px;
+  height: 24px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin-left: auto;
+}
+
+.delete-btn:hover {
+  background: #ff5252;
+  transform: scale(1.1);
+}
+
+.delete-btn:active {
+  transform: scale(0.95);
 }
 
 .status-badge.active {
