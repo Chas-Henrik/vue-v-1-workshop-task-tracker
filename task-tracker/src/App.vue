@@ -1,9 +1,10 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 const newTaskTitle = ref('')
 const newTaskDescription = ref('')
 const newTaskCategory = ref('Work')
+const selectedFilter = ref('all')
 
 const tasks = ref([
   {
@@ -85,6 +86,15 @@ const deleteTask = (taskId) => {
     tasks.value.splice(index, 1)
   }
 }
+
+const filteredTasks = computed(() => {
+  if (selectedFilter.value === 'active') {
+    return tasks.value.filter(task => task.status === 'active')
+  } else if (selectedFilter.value === 'completed') {
+    return tasks.value.filter(task => task.status === 'completed')
+  }
+  return tasks.value
+})
 </script>
 
 <template>
@@ -129,9 +139,34 @@ const deleteTask = (taskId) => {
       </form>
     </div>
     
+    <!-- Filter Panel -->
+    <div class="filter-panel">
+      <h3>Filter Tasks</h3>
+      <div class="filter-buttons">
+        <button 
+          :class="{ active: selectedFilter === 'all' }" 
+          @click="selectedFilter = 'all'"
+        >
+          All
+        </button>
+        <button 
+          :class="{ active: selectedFilter === 'active' }" 
+          @click="selectedFilter = 'active'"
+        >
+          Active
+        </button>
+        <button 
+          :class="{ active: selectedFilter === 'completed' }" 
+          @click="selectedFilter = 'completed'"
+        >
+          Completed
+        </button>
+      </div>
+    </div>
+    
     <div class="task-list">
       <div 
-        v-for="task in tasks" 
+        v-for="task in filteredTasks" 
         :key="task.id" 
         class="task-card"
         :class="{ completed: task.status === 'completed' }"
@@ -245,6 +280,49 @@ h1 {
 
 .add-btn:active {
   transform: translateY(0);
+}
+
+.filter-panel {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.filter-panel h3 {
+  margin: 0 0 1rem 0;
+  color: #2c3e50;
+  font-size: 1.1rem;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.filter-buttons button {
+  padding: 0.625rem 1.5rem;
+  background: #f0f0f0;
+  color: #2c3e50;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-buttons button:hover {
+  background: #e0e0e0;
+  transform: translateY(-2px);
+}
+
+.filter-buttons button.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-color: #667eea;
 }
 
 .task-list {
